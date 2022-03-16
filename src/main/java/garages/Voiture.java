@@ -28,8 +28,9 @@ public class Voiture {
 	 * @throws java.lang.Exception Si déjà dans un garage
 	 */
 	public void entreAuGarage(Garage g) throws Exception {
-		// Et si la voiture est déjà dans un garage ?
-
+		if(this.estDansUnGarage()) {
+			throw new Exception("La voiture est déjà dans un garage");
+		}
 		Stationnement s = new Stationnement(this, g);
 		myStationnements.add(s);
 	}
@@ -41,29 +42,33 @@ public class Voiture {
 	 * @throws java.lang.Exception si la voiture n'est pas dans un garage
 	 */
 	public void sortDuGarage() throws Exception {
-		throw new UnsupportedOperationException("Pas encore implémenté");
-		// TODO: Implémenter cette méthode
-		// Trouver le dernier stationnement de la voiture
-		// Terminer ce stationnement
+		if (!(this.estDansUnGarage())) {
+			throw new Exception ("La voiture n'est pas dans un garage");
+		}
+		this.myStationnements.get(myStationnements.size() - 1).terminer();
 	}
 
 	/**
 	 * @return l'ensemble des garages visités par cette voiture
 	 */
 	public Set<Garage> garagesVisites() {
-		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
+		Set<Garage> targetSet = new HashSet<>();
+		for (int i = 0; i <= this.myStationnements.size() - 1; i++){
+			targetSet.add(this.myStationnements.get(i).getGarage());
+		}
+		return targetSet;
 	}
 
 	/**
 	 * @return vrai si la voiture est dans un garage, faux sinon
 	 */
 	public boolean estDansUnGarage() {
-		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
-		// Vrai si le dernier stationnement est en cours
+		if(this.myStationnements.size() > 0) {
+			return this.myStationnements.get(myStationnements.size() - 1).estEnCours();
+		} else {
+			return false;
+		}
 	}
-
 	/**
 	 * Pour chaque garage visité, imprime le nom de ce garage suivi de la liste des
 	 * dates d'entrée / sortie dans ce garage
@@ -81,8 +86,17 @@ public class Voiture {
 	 * @param out l'endroit où imprimer (ex: System.out)
 	 */
 	public void imprimeStationnements(PrintStream out) {
-		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
+		String s = "";
+		Set<Garage> garages = this.garagesVisites();
+		for (Garage g : garages) {
+			s +=g.toString()+":\n";
+			for (Stationnement st : this.myStationnements){
+				if(st.getCar() == this && st.getGarage() == g) {
+					s +="\t"+st.toString()+"\n";
+				}
+			}
+		}
+		out.print(s);
 	}
 
 }
